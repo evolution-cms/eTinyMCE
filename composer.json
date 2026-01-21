@@ -4,6 +4,7 @@
   "type": "evolutioncms-plugin",
   "description": "TinyMCE 8 for Evolution CMS",
   "keywords": [
+    "evo",
     "evocms",
     "evolution-cms",
     "tinymce",
@@ -17,7 +18,10 @@
   "autoload": {
     "psr-4": {
       "EvolutionCMS\\eTinyMCE\\": "src/"
-    }
+    },
+    "files": [
+      "src/Compat/FlysystemLocalAdapter.php"
+    ]
   },
   "extra": {
     "laravel": {

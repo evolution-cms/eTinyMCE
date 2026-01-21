@@ -28,6 +28,7 @@ class eTinyMCEServiceProvider extends ServiceProvider
 
         $this->publishes([
             $tinymcePath => public_path('assets/plugins/eTinyMCE/tinymce'),
+            dirname(__DIR__) . '/public/js' => public_path('assets/plugins/eTinyMCE/js'),
         ], 'etinymce-assets');
 
         $this->publishes([

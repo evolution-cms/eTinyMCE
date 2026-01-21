@@ -243,27 +243,6 @@ Event::listen('evolution.OnRichTextEditorInit', function ($params) {
         $output[] = '<script src="' . $baseUrl . '/configs/' . $profile . '.js' . $version . '"></script>';
     }
 
-    $output[] = '<script>(function(){' .
-        'if(window.eTinyMCEFilePicker){return;}' .
-        'var opener=' . json_encode($opener) . ';' .
-        'window.eTinyMCEFilePicker=function(callback,value,meta){' .
-            'var type=\"images\";' .
-            'var title=\"Image\";' .
-            'if(meta && meta.filetype===\"file\"){type=\"files\";title=\"File\";}' .
-            'var managerUrl=' . json_encode(MODX_MANAGER_URL) . ';' .
-            'var url=managerUrl+\"media/browser/mcpuk/browse.php?opener=\"+opener+\"&field=src&type=\"+type;' .
-            'window.tinymceCallBackURL=\"\";' .
-            'tinymce.activeEditor.windowManager.open({' .
-                'title:title,' .
-                'size:\"large\",' .
-                'body:{type:\"panel\",items:[{type:\"htmlpanel\",html:\"<iframe id=\\\\\\\"filemanager_iframe-popup\\\\\\\" src=\\\\\\\"\"+url+\"\\\\\\\" frameborder=\\\\\\\"0\\\\\\\" style=\\\\\\\"width:100%;height:100%\\\\\\\"></iframe>\"}]},' .
-                'buttons:[],' .
-                'onClose:function(){if(window.tinymceCallBackURL){callback(window.tinymceCallBackURL,{})}}' .
-            '});' .
-        '};' .
-        'window.eTinyMCESetup=function(ed){ed.on(\"change\",function(){window.documentDirty=true;});};' .
-    '})();</script>';
-
     $managerTheme = eTinyMCE_getManagerThemeMode();
 
     foreach ($groups as $group) {
@@ -395,28 +374,19 @@ Event::listen('evolution.OnRichTextEditorInit', function ($params) {
         return implode("\n", $output);
     }
 
-    $output[] = '<script>(function(){' .
-        'var queue=' . $queueJson . ';' .
-        'if(!queue || !queue.length){return;}' .
-        'var profiles=window.eTinyMCEProfiles||{};' .
-        'var defaultKey=' . json_encode($defaultProfile) . ';' .
-        'queue.forEach(function(item){' .
-            'var profileKey=item.profile;' .
-            'if(!profiles[profileKey]){' .
-                'if(profiles[defaultKey]){' .
-                    'console.warn(\"eTinyMCE profile missing: \" + profileKey + \". Using default.\");' .
-                    'profileKey=defaultKey;' .
-                '}else{' .
-                    'console.warn(\"eTinyMCE profiles not loaded.\");' .
-                    'return;' .
-                '}' .
-            '}' .
-            'var profileOptions=profiles[profileKey]||{};' .
-            'var baseOptions={selector:item.selectors,file_picker_callback:window.eTinyMCEFilePicker,setup:window.eTinyMCESetup};' .
-            'var initOptions=Object.assign({},profileOptions,item.options||{},baseOptions);' .
-            'tinymce.init(initOptions);' .
-        '});' .
-    '})();</script>';
+    $configJson = json_encode([
+        'queue' => $initQueue,
+        'defaultProfile' => $defaultProfile,
+        'opener' => $opener,
+    ], JSON_UNESCAPED_SLASHES);
+
+    if ($configJson === false) {
+        eTinyMCE_log('Failed to encode init config.');
+        return implode("\n", $output);
+    }
+
+    $output[] = '<script>window.eTinyMCEConfig=' . $configJson . ';</script>';
+    $output[] = '<script src="' . $baseUrl . '/js/etinymce-init.js"></script>';
 
     return implode("\n", $output);
 });
