@@ -381,9 +381,6 @@ Event::listen('evolution.OnRichTextEditorInit', function ($params) {
     if (!is_array($efilemanagerSettings)) {
         $efilemanagerSettings = [];
     }
-    $efilemanagerEnabledSetting = array_key_exists('enable', $efilemanagerSettings)
-        ? (bool)$efilemanagerSettings['enable']
-        : false;
 
     $lfmScriptPath = null;
     if (function_exists('public_path')) {
@@ -422,8 +419,7 @@ Event::listen('evolution.OnRichTextEditorInit', function ($params) {
         $whichBrowser = 'mcpuk';
     }
 
-    $fileManagerEnabled = ($whichBrowser === 'efilemanager')
-        && $efilemanagerEnabledSetting;
+    $fileManagerEnabled = ($whichBrowser === 'efilemanager');
 
     $urlStrategy = (string)($efilemanagerSettings['url_strategy'] ?? 'relative');
     if ($urlStrategy !== 'absolute') {

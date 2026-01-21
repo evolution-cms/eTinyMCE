@@ -183,6 +183,10 @@
         }
 
         if (!fileManager || !fileManager.enabled) {
+            if (fileManager && fileManager.allowMcpukFallback) {
+                openLegacyMcpuk(editor, callback, meta);
+                return;
+            }
             showMessage(editor, 'File manager is disabled.');
             return;
         }
