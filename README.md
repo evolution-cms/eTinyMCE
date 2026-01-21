@@ -23,6 +23,9 @@ php artisan vendor:publish --provider="EvolutionCMS\eTinyMCE\eTinyMCEServiceProv
 php artisan vendor:publish --provider="EvolutionCMS\eTinyMCE\eTinyMCEServiceProvider" --tag=etinymce-assets
 php artisan vendor:publish --provider="EvolutionCMS\eTinyMCE\eTinyMCEServiceProvider" --tag=etinymce-profiles
 
+Note: eTinyMCE publishes assets as individual files to avoid Evo directory publish issues.
+The first publish may take a bit longer because TinyMCE has many files.
+
 ## Configuration
 Published config path:
 - core/custom/config/seiger/settings/eTinyMCE.php

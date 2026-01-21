@@ -8,7 +8,9 @@ class eTinyMCEServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(dirname(__DIR__) . '/config/eTinyMCECheck.php', 'cms.settings');
         $this->loadViewsFrom(dirname(__DIR__) . '/views', 'eTinyMCE');
-        $this->publishResources();
+        if ($this->app->runningInConsole()) {
+            $this->publishResources();
+        }
     }
 
     public function register()
@@ -26,13 +28,51 @@ class eTinyMCEServiceProvider extends ServiceProvider
             ? base_path('vendor/tinymce/tinymce')
             : dirname(__DIR__, 3) . '/tinymce/tinymce';
 
-        $this->publishes([
-            $tinymcePath => public_path('assets/plugins/eTinyMCE/tinymce'),
-            dirname(__DIR__) . '/public/js' => public_path('assets/plugins/eTinyMCE/js'),
-        ], 'etinymce-assets');
+        $tinymceFiles = $this->collectPublishFiles($tinymcePath, public_path('assets/plugins/eTinyMCE/tinymce'));
+        if ($tinymceFiles !== []) {
+            $this->publishes($tinymceFiles, 'etinymce-assets');
+        }
 
-        $this->publishes([
-            dirname(__DIR__) . '/public/configs' => public_path('assets/plugins/eTinyMCE/configs'),
-        ], 'etinymce-profiles');
+        $profileFiles = $this->collectPublishFiles(
+            dirname(__DIR__) . '/public/configs',
+            public_path('assets/plugins/eTinyMCE/configs')
+        );
+        if ($profileFiles !== []) {
+            $this->publishes($profileFiles, 'etinymce-profiles');
+        }
+
+        $jsFiles = $this->collectPublishFiles(
+            dirname(__DIR__) . '/public/js',
+            public_path('assets/plugins/eTinyMCE/js')
+        );
+        if ($jsFiles !== []) {
+            $this->publishes($jsFiles, 'etinymce-assets');
+        }
+    }
+
+    protected function collectPublishFiles(string $sourceDir, string $targetDir): array
+    {
+        if (!is_dir($sourceDir)) {
+            return [];
+        }
+
+        $files = [];
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($sourceDir, \FilesystemIterator::SKIP_DOTS)
+        );
+
+        $sourceDir = rtrim($sourceDir, DIRECTORY_SEPARATOR);
+        $targetDir = rtrim($targetDir, DIRECTORY_SEPARATOR);
+
+        foreach ($iterator as $file) {
+            if (!$file->isFile()) {
+                continue;
+            }
+            $path = $file->getPathname();
+            $relative = substr($path, strlen($sourceDir) + 1);
+            $files[$path] = $targetDir . DIRECTORY_SEPARATOR . $relative;
+        }
+
+        return $files;
     }
 }
