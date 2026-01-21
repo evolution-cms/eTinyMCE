@@ -142,6 +142,9 @@ Event::listen('evolution.OnRichTextEditorInit', function ($params) {
     }
 
     $baseUrl = MODX_SITE_URL . 'assets/plugins/eTinyMCE';
+    $siteBaseUrl = defined('MODX_BASE_URL') ? MODX_BASE_URL : '/';
+    $siteBaseUrl = '/' . ltrim($siteBaseUrl, '/');
+    $siteBaseUrl = rtrim($siteBaseUrl, '/');
     $tinymceJs = $baseUrl . '/tinymce/tinymce.min.js';
     $tinymceJsPath = MODX_BASE_PATH . 'assets/plugins/eTinyMCE/tinymce/tinymce.min.js';
 
@@ -374,10 +377,55 @@ Event::listen('evolution.OnRichTextEditorInit', function ($params) {
         return implode("\n", $output);
     }
 
+    $efilemanagerSettings = config('efilemanager', []);
+    if (!is_array($efilemanagerSettings)) {
+        $efilemanagerSettings = [];
+    }
+
+    $lfmScriptPath = null;
+    if (function_exists('public_path')) {
+        $lfmScriptPath = public_path('assets/vendor/laravel-filemanager/js/script.js');
+    } elseif (defined('MODX_BASE_PATH')) {
+        $lfmScriptPath = MODX_BASE_PATH . 'assets/vendor/laravel-filemanager/js/script.js';
+    }
+
+    $lfmScriptMtime = null;
+    if ($lfmScriptPath && is_file($lfmScriptPath)) {
+        $lfmScriptMtime = @filemtime($lfmScriptPath);
+    }
+
+    $lfmUrlPrefix = 'filemanager';
+    if (function_exists('config')) {
+        $lfmUrlPrefix = (string)config('lfm.url_prefix', $lfmUrlPrefix);
+    }
+    if ($lfmUrlPrefix === '') {
+        $lfmUrlPrefix = 'filemanager';
+    }
+
+    $fileManagerEnabled = (bool)($efilemanagerSettings['enable'] ?? false)
+        && $lfmScriptPath
+        && is_file($lfmScriptPath);
+
+    $urlStrategy = (string)($efilemanagerSettings['url_strategy'] ?? 'relative');
+    if ($urlStrategy !== 'absolute') {
+        $urlStrategy = 'relative';
+    }
+
+    $fileManagerConfig = [
+        'enabled' => $fileManagerEnabled,
+        'urlPrefix' => $lfmUrlPrefix,
+        'cacheBust' => is_int($lfmScriptMtime) ? (string)$lfmScriptMtime : '',
+        'allowMcpukFallback' => (bool)($efilemanagerSettings['allow_mcpuk_fallback'] ?? false),
+        'urlStrategy' => $urlStrategy,
+        'allowSignedUrls' => (bool)($efilemanagerSettings['allow_signed_urls'] ?? false),
+    ];
+
     $configJson = json_encode([
         'queue' => $initQueue,
         'defaultProfile' => $defaultProfile,
         'opener' => $opener,
+        'baseUrl' => $siteBaseUrl,
+        'fileManager' => $fileManagerConfig,
     ], JSON_UNESCAPED_SLASHES);
 
     if ($configJson === false) {
