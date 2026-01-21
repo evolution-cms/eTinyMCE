@@ -1,7 +1,7 @@
 {
   "name": "evolution-cms/etinymce",
   "license": "GPL-2.0",
-  "type": "EvolutionCMS-Plugin",
+  "type": "evolutioncms-plugin",
   "description": "TinyMCE 8 for Evolution CMS",
   "keywords": [
     "evocms",

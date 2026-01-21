@@ -226,6 +226,7 @@ Event::listen('evolution.OnRichTextEditorInit', function ($params) {
     $output[] = '<script src="' . $tinymceJs . '"></script>';
     $output[] = '<script>window.eTinyMCEProfiles = window.eTinyMCEProfiles || {};</script>';
 
+    $initQueue = [];
     foreach ($profileScripts as $profile) {
         $configPath = $configDirPath . '/' . $profile . '.js';
         if (!is_file($configPath)) {
@@ -381,29 +382,41 @@ Event::listen('evolution.OnRichTextEditorInit', function ($params) {
             continue;
         }
 
-        $output[] = '<script>(function(){' .
-            'var profiles=window.eTinyMCEProfiles||{};' .
-            'var profileKey=' . json_encode($profile) . ';' .
-            'var defaultKey=' . json_encode($defaultProfile) . ';' .
+        $initQueue[] = [
+            'profile' => $profile,
+            'selectors' => $selectorsList,
+            'options' => $initOptions,
+        ];
+    }
+
+    $queueJson = json_encode($initQueue, JSON_UNESCAPED_SLASHES);
+    if ($queueJson === false) {
+        eTinyMCE_log('Failed to encode init queue.');
+        return implode("\n", $output);
+    }
+
+    $output[] = '<script>(function(){' .
+        'var queue=' . $queueJson . ';' .
+        'if(!queue || !queue.length){return;}' .
+        'var profiles=window.eTinyMCEProfiles||{};' .
+        'var defaultKey=' . json_encode($defaultProfile) . ';' .
+        'queue.forEach(function(item){' .
+            'var profileKey=item.profile;' .
             'if(!profiles[profileKey]){' .
                 'if(profiles[defaultKey]){' .
-                    'console.warn("eTinyMCE profile missing: " + profileKey + ". Using default.");' .
+                    'console.warn(\"eTinyMCE profile missing: \" + profileKey + \". Using default.\");' .
                     'profileKey=defaultKey;' .
                 '}else{' .
-                    'console.warn("eTinyMCE profiles not loaded.");' .
+                    'console.warn(\"eTinyMCE profiles not loaded.\");' .
                     'return;' .
                 '}' .
             '}' .
             'var profileOptions=profiles[profileKey]||{};' .
-            'var baseOptions={' .
-                'selector:' . json_encode($selectorsList) . ',' .
-                'file_picker_callback:window.eTinyMCEFilePicker,' .
-                'setup:window.eTinyMCESetup' .
-            '};' .
-            'var initOptions=Object.assign({},profileOptions,' . $initOptionsJson . ',baseOptions);' .
+            'var baseOptions={selector:item.selectors,file_picker_callback:window.eTinyMCEFilePicker,setup:window.eTinyMCESetup};' .
+            'var initOptions=Object.assign({},profileOptions,item.options||{},baseOptions);' .
             'tinymce.init(initOptions);' .
-        '})();</script>';
-    }
+        '});' .
+    '})();</script>';
 
     return implode("\n", $output);
 });
