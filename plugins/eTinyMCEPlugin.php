@@ -377,7 +377,7 @@ Event::listen('evolution.OnRichTextEditorInit', function ($params) {
         return implode("\n", $output);
     }
 
-    $efilemanagerSettings = config('efilemanager', []);
+    $efilemanagerSettings = config('cms.settings.eFilemanager', config('efilemanager', []));
     if (!is_array($efilemanagerSettings)) {
         $efilemanagerSettings = [];
     }
