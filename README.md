@@ -38,7 +38,7 @@ Default profiles and theme mapping live here. Example structure:
 - profiles (full/mini/introtext/custom)
 
 Default editor override (optional):
-- core/custom/config/cms/settings/which_editor.php
+- core/custom/config/cms/settings/which_editor.php (string, e.g. "eTinyMCE")
 
 ## Manager settings
 System Settings > Interface:

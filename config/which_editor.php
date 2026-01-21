@@ -1,3 +1,1 @@
-<?php return [
-    'which_editor' => 'eTinyMCE',
-];
+<?php return "eTinyMCE";
