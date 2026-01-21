@@ -21,7 +21,11 @@ class eTinyMCEServiceProvider extends ServiceProvider
     protected function publishResources(): void
     {
         $this->publishes([
-            dirname(__DIR__) . '/config/eTinyMCESettings.php' => config_path('seiger/settings/eTinyMCE.php', true),
+            dirname(__DIR__) . '/config/eTinyMCESettings.php' => config_path('cms/settings/eTinyMCE.php', true),
+        ], 'etinymce-config');
+
+        $this->publishes([
+            dirname(__DIR__) . '/config/which_editor.php' => config_path('cms/settings/which_editor.php', true),
         ], 'etinymce-config');
 
         $tinymcePath = function_exists('base_path')

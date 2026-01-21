@@ -80,7 +80,7 @@ Event::listen('evolution.OnRichTextEditorRegister', function () {
 });
 
 Event::listen('evolution.OnInterfaceSettingsRender', function () {
-    $settings = config('seiger.settings.eTinyMCE', []);
+    $settings = config('cms.settings.eTinyMCE', []);
     $profiles = $settings['profiles'] ?? [];
     $themes = $settings['themes'] ?? [];
 
@@ -115,7 +115,7 @@ Event::listen('evolution.OnRichTextEditorInit', function ($params) {
         return '';
     }
 
-    $settings = config('seiger.settings.eTinyMCE', []);
+    $settings = config('cms.settings.eTinyMCE', []);
     $profiles = $settings['profiles'] ?? [];
     $themes = $settings['themes'] ?? [];
 

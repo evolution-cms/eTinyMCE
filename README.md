@@ -28,7 +28,7 @@ The first publish may take a bit longer because TinyMCE has many files.
 
 ## Configuration
 Published config path:
-- core/custom/config/seiger/settings/eTinyMCE.php
+- core/custom/config/cms/settings/eTinyMCE.php
 
 Default profiles and theme mapping live here. Example structure:
 - default_profile
@@ -36,6 +36,9 @@ Default profiles and theme mapping live here. Example structure:
 - opener (tinymce)
 - themes (light/lightness/dark/darkness)
 - profiles (full/mini/introtext/custom)
+
+Default editor override (optional):
+- core/custom/config/cms/settings/which_editor.php
 
 ## Manager settings
 System Settings > Interface:
