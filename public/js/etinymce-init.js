@@ -159,22 +159,18 @@
         // Legacy mcpuk uses a global URL handoff; keep it local to this dialog.
         var previousUrl = window.tinymceCallBackURL;
         window.tinymceCallBackURL = '';
-        editor.windowManager.open({
+        editor.windowManager.openUrl({
             title: title,
-            size: 'large',
-            body: {
-                type: 'panel',
-                items: [{
-                    type: 'htmlpanel',
-                    html: '<iframe id="filemanager_iframe-popup" src="' + url + '" frameborder="0" style="width:100%;height:100%"></iframe>'
-                }]
-            },
+            url: url,
             buttons: [],
             onClose: function () {
                 var picked = window.tinymceCallBackURL;
                 window.tinymceCallBackURL = previousUrl;
                 if (picked) {
-                    callback(picked, {});
+                    var normalized = normalizeSelectedUrl(picked);
+                    if (normalized) {
+                        callback(normalized, {});
+                    }
                 }
             }
         });

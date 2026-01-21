@@ -387,9 +387,21 @@ Event::listen('evolution.OnRichTextEditorInit', function ($params) {
 
     $lfmScriptPath = null;
     if (function_exists('public_path')) {
-        $lfmScriptPath = public_path('assets/vendor/laravel-filemanager/js/script.js');
+        $primaryPath = public_path('assets/vendor/laravel-filemanager/js/script.js');
+        $secondaryPath = public_path('vendor/laravel-filemanager/js/script.js');
+        if (is_file($primaryPath)) {
+            $lfmScriptPath = $primaryPath;
+        } elseif (is_file($secondaryPath)) {
+            $lfmScriptPath = $secondaryPath;
+        }
     } elseif (defined('MODX_BASE_PATH')) {
-        $lfmScriptPath = MODX_BASE_PATH . 'assets/vendor/laravel-filemanager/js/script.js';
+        $primaryPath = MODX_BASE_PATH . 'assets/vendor/laravel-filemanager/js/script.js';
+        $secondaryPath = MODX_BASE_PATH . 'vendor/laravel-filemanager/js/script.js';
+        if (is_file($primaryPath)) {
+            $lfmScriptPath = $primaryPath;
+        } elseif (is_file($secondaryPath)) {
+            $lfmScriptPath = $secondaryPath;
+        }
     }
 
     $lfmScriptMtime = null;
@@ -411,9 +423,7 @@ Event::listen('evolution.OnRichTextEditorInit', function ($params) {
     }
 
     $fileManagerEnabled = ($whichBrowser === 'efilemanager')
-        && $efilemanagerEnabledSetting
-        && $lfmScriptPath
-        && is_file($lfmScriptPath);
+        && $efilemanagerEnabledSetting;
 
     $urlStrategy = (string)($efilemanagerSettings['url_strategy'] ?? 'relative');
     if ($urlStrategy !== 'absolute') {
