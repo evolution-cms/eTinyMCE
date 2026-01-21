@@ -157,7 +157,7 @@ Event::listen('evolution.OnRichTextEditorInit', function ($params) {
     }
 
     $optionsByField = $params['options'] ?? [];
-    $protected = ['selector', 'target', 'file_picker_callback', 'setup', 'init_instance_callback', 'plugins'];
+    $protected = ['selector', 'target', 'file_picker_callback', 'setup', 'init_instance_callback', 'plugins', 'license_key'];
 
     $groups = [];
     foreach ($elements as $element) {

@@ -66,7 +66,8 @@
         var baseOptions = {
             selector: item.selectors,
             file_picker_callback: window.eTinyMCEFilePicker,
-            setup: window.eTinyMCESetup
+            setup: window.eTinyMCESetup,
+            license_key: 'gpl'
         };
 
         var initOptions = Object.assign({}, profileOptions, item.options || {}, baseOptions);

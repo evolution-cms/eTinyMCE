@@ -59,6 +59,10 @@ Profiles contain editor options only. Do not set skin or content_css in profiles
 Uses the standard Evo file manager (mcpuk) with opener `tinymce` by default.
 You can override the opener via system setting `etinymce_opener`.
 
+## TinyMCE license key
+TinyMCE 8 requires an explicit license declaration even for self-hosted Community build.
+eTinyMCE always sets `license_key = 'gpl'` internally.
+
 ## Troubleshooting
 - If TinyMCE does not load, ensure assets are published to public/assets/plugins/eTinyMCE.
 - If a profile config is missing, the editor falls back to the default profile.
