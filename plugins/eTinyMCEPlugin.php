@@ -381,6 +381,9 @@ Event::listen('evolution.OnRichTextEditorInit', function ($params) {
     if (!is_array($efilemanagerSettings)) {
         $efilemanagerSettings = [];
     }
+    $efilemanagerEnabledSetting = array_key_exists('enable', $efilemanagerSettings)
+        ? (bool)$efilemanagerSettings['enable']
+        : false;
 
     $lfmScriptPath = null;
     if (function_exists('public_path')) {
@@ -402,7 +405,13 @@ Event::listen('evolution.OnRichTextEditorInit', function ($params) {
         $lfmUrlPrefix = 'filemanager';
     }
 
-    $fileManagerEnabled = (bool)($efilemanagerSettings['enable'] ?? false)
+    $whichBrowser = evo()->getConfig('which_browser') ?: 'mcpuk';
+    if ($whichBrowser !== 'efilemanager') {
+        $whichBrowser = 'mcpuk';
+    }
+
+    $fileManagerEnabled = ($whichBrowser === 'efilemanager')
+        && $efilemanagerEnabledSetting
         && $lfmScriptPath
         && is_file($lfmScriptPath);
 
@@ -425,6 +434,7 @@ Event::listen('evolution.OnRichTextEditorInit', function ($params) {
         'defaultProfile' => $defaultProfile,
         'opener' => $opener,
         'baseUrl' => $siteBaseUrl,
+        'whichBrowser' => $whichBrowser,
         'fileManager' => $fileManagerConfig,
     ], JSON_UNESCAPED_SLASHES);
 

@@ -8,6 +8,7 @@
     var baseUrl = (cfg.baseUrl || '').toString();
     var fileManager = cfg.fileManager || {};
     var opener = cfg.opener || 'tinymce';
+    var whichBrowser = normalizeString(cfg.whichBrowser || 'mcpuk').toLowerCase();
 
     function normalizeBaseUrl(value) {
         var base = (value || '').toString();
@@ -22,24 +23,6 @@
     }
 
     var normalizedBaseUrl = normalizeBaseUrl(baseUrl);
-
-    function getTinyMceMajorVersion() {
-        var raw = 0;
-        if (window.tinymce) {
-            if (window.tinymce.majorVersion) {
-                raw = window.tinymce.majorVersion;
-            } else if (window.tinymce.version) {
-                raw = window.tinymce.version.split('.')[0];
-            }
-        }
-        var parsed = parseInt(raw, 10);
-        return isNaN(parsed) ? 0 : parsed;
-    }
-
-    function isLegacyTinyMce() {
-        var major = getTinyMceMajorVersion();
-        return major > 0 && major < 5;
-    }
 
     function showMessage(editor, text, type) {
         if (editor && editor.notificationManager && typeof editor.notificationManager.open === 'function') {
@@ -165,10 +148,6 @@
         return meta;
     }
 
-    function shouldAllowLegacyFallback() {
-        return !!fileManager.allowMcpukFallback || isLegacyTinyMce();
-    }
-
     function openLegacyMcpuk(editor, callback, meta) {
         var isImage = meta && meta.filetype === 'image';
         var type = isImage ? 'images' : 'files';
@@ -202,12 +181,12 @@
     }
 
     function openFileManager(editor, callback, meta) {
+        if (whichBrowser !== 'efilemanager') {
+            openLegacyMcpuk(editor, callback, meta);
+            return;
+        }
+
         if (!fileManager || !fileManager.enabled) {
-            if (shouldAllowLegacyFallback()) {
-                showMessage(editor, 'File manager is disabled. Using legacy browser.', 'warning');
-                openLegacyMcpuk(editor, callback, meta);
-                return;
-            }
             showMessage(editor, 'File manager is disabled.');
             return;
         }
