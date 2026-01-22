@@ -37,6 +37,14 @@ class eTinyMCEServiceProvider extends ServiceProvider
             $this->publishes($tinymceFiles, 'etinymce-assets');
         }
 
+        $customLangFiles = $this->collectPublishFiles(
+            dirname(__DIR__) . '/public/tinymce/langs',
+            public_path('assets/plugins/eTinyMCE/tinymce/langs')
+        );
+        if ($customLangFiles !== []) {
+            $this->publishes($customLangFiles, 'etinymce-assets');
+        }
+
         $profileFiles = $this->collectPublishFiles(
             dirname(__DIR__) . '/public/configs',
             public_path('assets/plugins/eTinyMCE/configs')

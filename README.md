@@ -69,3 +69,4 @@ eTinyMCE always sets `license_key = 'gpl'` internally.
 ## Troubleshooting
 - If TinyMCE does not load, ensure assets are published to public/assets/plugins/eTinyMCE.
 - If a profile config is missing, the editor falls back to the default profile.
+- Custom language packs can be added under public/tinymce/langs and published to assets/plugins/eTinyMCE/tinymce/langs.
