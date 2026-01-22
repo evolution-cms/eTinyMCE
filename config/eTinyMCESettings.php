@@ -5,8 +5,8 @@
     'themes' => [
         'light' => ['skin' => 'oxide', 'content_css' => ''],
         'lightness' => ['skin' => 'oxide', 'content_css' => ''],
-        'dark' => ['skin' => 'oxide-dark', 'content_css' => ''],
-        'darkness' => ['skin' => 'oxide-dark', 'content_css' => ''],
+        'dark' => ['skin' => 'oxide-dark', 'content_css' => 'dark'],
+        'darkness' => ['skin' => 'oxide-dark', 'content_css' => 'dark'],
     ],
     'profiles' => [
         'full' => ['label' => 'Full', 'options' => []],

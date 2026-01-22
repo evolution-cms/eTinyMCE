@@ -325,14 +325,42 @@ Event::listen('evolution.OnRichTextEditorInit', function ($params) {
 
         $mergedOptions = array_replace_recursive($profileOptions, $systemOverrides, $fieldOverrides);
 
-        $language = evo()->getConfig('fe_editor_lang') ?: '';
+        $languageCandidates = [];
+        $feLanguage = evo()->getConfig('fe_editor_lang') ?: '';
+        if ($feLanguage !== '') {
+            $languageCandidates[] = $feLanguage;
+        }
+        $systemLanguage = evo()->getConfig('manager_language') ?: '';
+        if ($systemLanguage !== '') {
+            $languageCandidates[] = $systemLanguage;
+        }
+
+        $normalizedCandidates = [];
+        foreach ($languageCandidates as $candidate) {
+            $candidate = trim((string)$candidate);
+            if ($candidate === '') {
+                continue;
+            }
+
+            $normalizedCandidates[] = $candidate;
+            $lower = strtolower($candidate);
+            $normalizedCandidates[] = $lower;
+            $normalizedCandidates[] = str_replace('-', '_', $lower);
+
+            if (strlen($lower) >= 2) {
+                $normalizedCandidates[] = substr($lower, 0, 2);
+            }
+        }
+        $normalizedCandidates = array_values(array_unique(array_filter($normalizedCandidates)));
+
+        $language = '';
         $languageUrl = '';
-        if ($language !== '') {
-            $languagePath = MODX_BASE_PATH . 'assets/plugins/eTinyMCE/tinymce/langs/' . $language . '.js';
+        foreach ($normalizedCandidates as $candidate) {
+            $languagePath = MODX_BASE_PATH . 'assets/plugins/eTinyMCE/tinymce/langs/' . $candidate . '.js';
             if (is_file($languagePath)) {
-                $languageUrl = $baseUrl . '/tinymce/langs/' . $language . '.js';
-            } else {
-                $language = '';
+                $language = $candidate;
+                $languageUrl = $baseUrl . '/tinymce/langs/' . $candidate . '.js';
+                break;
             }
         }
 
