@@ -104,6 +104,7 @@
 
         var rawSettings = editor.getParam('evolinks', {});
         var settings = assign({}, defaults, rawSettings);
+        var editorSettings = (editor && editor.settings) ? editor.settings : {};
 
         settings.minChars = normalizeInt(settings.minChars, defaults.minChars);
         settings.debounce = normalizeInt(settings.debounce, defaults.debounce);
@@ -162,8 +163,8 @@
 
         function buildAnchorList(currentHref) {
             var list = [];
-            if (Array.isArray(editor.settings.anchor_list)) {
-                list = editor.settings.anchor_list.slice();
+            if (Array.isArray(editorSettings.anchor_list)) {
+                list = editorSettings.anchor_list.slice();
             } else {
                 editor.dom.select('a:not([href])').forEach(function (anchor) {
                     var id = anchor.name || anchor.id;
@@ -207,7 +208,7 @@
 
         function resolveLinkList() {
             return new Promise(function (resolve) {
-                var linkList = editor.settings.link_list;
+                var linkList = editorSettings.link_list;
                 if (!linkList) {
                     resolve(null);
                     return;
@@ -239,7 +240,7 @@
         }
 
         function buildTargetList() {
-            var list = editor.settings.target_list;
+            var list = editorSettings.target_list;
             if (list === false) {
                 return null;
             }
@@ -253,17 +254,17 @@
         }
 
         function buildRelList() {
-            if (!editor.settings.rel_list) {
+            if (!editorSettings.rel_list) {
                 return null;
             }
-            return buildListItems(editor.settings.rel_list);
+            return buildListItems(editorSettings.rel_list);
         }
 
         function buildClassList() {
-            if (!editor.settings.link_class_list) {
+            if (!editorSettings.link_class_list) {
                 return null;
             }
-            return buildListItems(editor.settings.link_class_list);
+            return buildListItems(editorSettings.link_class_list);
         }
 
         function buildHrefFromResult(item) {
@@ -337,7 +338,7 @@
                 href: initialHref || '',
                 text: initialText || '',
                 title: anchorElm ? dom.getAttrib(anchorElm, 'title') : '',
-                target: anchorElm ? dom.getAttrib(anchorElm, 'target') : (editor.settings.default_link_target || ''),
+                target: anchorElm ? dom.getAttrib(anchorElm, 'target') : (editorSettings.default_link_target || ''),
                 rel: anchorElm ? dom.getAttrib(anchorElm, 'rel') : '',
                 'class': anchorElm ? dom.getAttrib(anchorElm, 'class') : ''
             };
@@ -405,7 +406,7 @@
                         label: t('Text to display')
                     });
                 }
-                if (editor.settings.link_title !== false) {
+                if (editorSettings.link_title !== false) {
                     items.push({
                         type: 'input',
                         name: 'title',
@@ -546,7 +547,7 @@
                         if (details.name !== 'browse') {
                             return;
                         }
-                        var picker = editor.settings.file_picker_callback;
+                        var picker = editorSettings.file_picker_callback;
                         if (typeof picker !== 'function') {
                             showNotice('File picker is not available.');
                             return;
@@ -614,8 +615,8 @@
                             return;
                         }
 
-                        if ((editor.settings.link_assume_external_targets && !/^\w+:/i.test(href)) ||
-                            (!editor.settings.link_assume_external_targets && /^\s*www\./i.test(href))) {
+                        if ((editorSettings.link_assume_external_targets && !/^\w+:/i.test(href)) ||
+                            (!editorSettings.link_assume_external_targets && /^\s*www\./i.test(href))) {
                             delayedConfirm(
                                 t('The URL you entered seems to be an external link. Do you want to add the required http:// prefix?'),
                                 function (state) {
