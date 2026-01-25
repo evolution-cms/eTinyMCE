@@ -5,6 +5,21 @@
 (function () {
     'use strict';
 
+    if (typeof tinymce !== 'undefined' && typeof tinymce.addI18n === 'function') {
+        tinymce.addI18n('de', {
+            'Search in EVO': 'In EVO suchen',
+            'EVO search failed.': 'EVO-Suche fehlgeschlagen.'
+        });
+        tinymce.addI18n('uk', {
+            'Search in EVO': 'Пошук в EVO',
+            'EVO search failed.': 'Пошук в EVO не вдався.'
+        });
+        tinymce.addI18n('pl', {
+            'Search in EVO': 'Szukaj w EVO',
+            'EVO search failed.': 'Wyszukiwanie w EVO nie powiodło się.'
+        });
+    }
+
     var global$5 = tinymce.util.Tools.resolve('tinymce.PluginManager');
 
     /* eslint-disable @typescript-eslint/no-wrapper-object-types */
@@ -1412,8 +1427,9 @@
             iconName: 'link'
         };
         const showEvoNotice = (text) => {
+            const message = editor && typeof editor.translate === 'function' ? editor.translate(text) : text;
             if (editor.notificationManager && typeof editor.notificationManager.open === 'function') {
-                editor.notificationManager.open({ text, type: 'warning', timeout: 3000 });
+                editor.notificationManager.open({ text: message, type: 'warning', timeout: 3000 });
             }
         };
         const updateEvoCache = (key, value) => {
@@ -1516,7 +1532,7 @@
                 {
                     type: 'input',
                     name: 'evo_search',
-                    label: 'Search in EVO'
+                    label: editor && typeof editor.translate === 'function' ? editor.translate('Search in EVO') : 'Search in EVO'
                 },
                 {
                     type: 'collection',
