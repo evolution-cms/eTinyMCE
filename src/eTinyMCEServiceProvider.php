@@ -60,14 +60,6 @@ class eTinyMCEServiceProvider extends ServiceProvider
         if ($jsFiles !== []) {
             $this->publishes($jsFiles, 'etinymce-assets');
         }
-
-        $connectorFiles = $this->collectPublishFiles(
-            dirname(__DIR__) . '/public/connectors',
-            public_path('assets/plugins/eTinyMCE/connectors')
-        );
-        if ($connectorFiles !== []) {
-            $this->publishes($connectorFiles, 'etinymce-assets');
-        }
     }
 
     protected function collectPublishFiles(string $sourceDir, string $targetDir): array
