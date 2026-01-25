@@ -1559,22 +1559,7 @@
                     results.forEach((item) => {
                         const text = item.title || item.pagetitle || item.alias || String(item.id);
                         const value = String(item.id);
-                        let iconName = 'link';
-                        if (item && typeof item.icon === 'string' && item.icon.trim()) {
-                            const rawIcon = item.icon.trim();
-                            if (rawIcon.indexOf('<svg') !== -1 && tinymce?.IconManager?.add) {
-                                if (!evoState.iconRegistered && evoState.iconName !== 'link') {
-                                    tinymce.IconManager.add(evoState.iconName, rawIcon);
-                                    evoState.iconRegistered = true;
-                                }
-                                if (evoState.iconRegistered) {
-                                    iconName = evoState.iconName;
-                                }
-                            } else {
-                                iconName = rawIcon;
-                            }
-                        }
-                        items.push({ text, value, icon: iconName });
+                        items.push({ text, value, icon: 'link' });
                         map[value] = item;
                     });
                     evoState.searchItems = items;
