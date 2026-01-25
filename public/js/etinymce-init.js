@@ -257,6 +257,38 @@
     var profiles = window.eTinyMCEProfiles || {};
     var defaultKey = cfg.defaultProfile || '';
 
+    function normalizePluginList(value) {
+        if (Array.isArray(value)) {
+            return value.slice();
+        }
+        if (typeof value === 'string') {
+            return value.split(/[\\s,]+/).filter(Boolean);
+        }
+        return [];
+    }
+
+    function ensurePlugin(options, pluginName) {
+        var list = normalizePluginList(options.plugins);
+        if (list.indexOf(pluginName) === -1) {
+            list.push(pluginName);
+        }
+        options.plugins = list.join(' ');
+    }
+
+    function ensureExternalPlugin(options, name, url) {
+        if (!url) {
+            return;
+        }
+        var external = options.external_plugins;
+        if (!external || typeof external !== 'object') {
+            external = {};
+        }
+        if (!external[name]) {
+            external[name] = url;
+        }
+        options.external_plugins = external;
+    }
+
     queue.forEach(function (item) {
         var profileKey = item.profile;
         if (!profiles[profileKey]) {
@@ -269,7 +301,26 @@
             }
         }
 
-        var profileOptions = profiles[profileKey] || {};
+        var profileOptions = Object.assign({}, profiles[profileKey] || {});
+        var evolinksDefaults = {
+            searchUrl: normalizedBaseUrl + '/assets/plugins/eTinyMCE/connectors/evolinks-search.php',
+            minChars: 2,
+            debounce: 250,
+            limit: 10,
+            outputMode: 'placeholder',
+            includeUnpublished: false,
+            enableTree: true,
+            cacheSize: 20
+        };
+
+        var evolinksOverrides = {};
+        if (profileOptions.evolinks && typeof profileOptions.evolinks === 'object') {
+            evolinksOverrides = Object.assign({}, profileOptions.evolinks);
+        }
+        if (item.options && item.options.evolinks && typeof item.options.evolinks === 'object') {
+            evolinksOverrides = Object.assign(evolinksOverrides, item.options.evolinks);
+        }
+        profileOptions.evolinks = Object.assign({}, evolinksDefaults, evolinksOverrides);
         var baseOptions = {
             selector: item.selectors,
             file_picker_callback: window.eTinyMCEFilePicker,
@@ -278,6 +329,9 @@
         };
 
         var initOptions = Object.assign({}, profileOptions, item.options || {}, baseOptions);
+        var evolinksUrl = normalizedBaseUrl + '/assets/plugins/eTinyMCE/js/evolinks/plugin.js';
+        ensureExternalPlugin(initOptions, 'evolinks', evolinksUrl);
+        ensurePlugin(initOptions, 'evolinks');
         tinymce.init(initOptions);
     });
 })();
