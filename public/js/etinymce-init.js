@@ -263,23 +263,7 @@
             return value.slice();
         }
         if (typeof value === 'string') {
-            var result = [];
-            var current = '';
-            for (var i = 0; i < value.length; i += 1) {
-                var code = value.charCodeAt(i);
-                if (code === 32 || code === 9 || code === 10 || code === 13 || code === 44) {
-                    if (current) {
-                        result.push(current);
-                        current = '';
-                    }
-                } else {
-                    current += value[i];
-                }
-            }
-            if (current) {
-                result.push(current);
-            }
-            return result;
+            return value.split(/[\\s,]+/).filter(Boolean);
         }
         return [];
     }
