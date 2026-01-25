@@ -1,7 +1,7 @@
 window.eTinyMCEProfiles = window.eTinyMCEProfiles || {};
 window.eTinyMCEProfiles.mini = {
     plugins: 'autolink lists link evolinks code',
-    toolbar: 'undo redo | bold italic underline | bullist numlist | link evolinks | code',
+    toolbar: 'undo redo | bold italic underline | bullist numlist | link | code',
     menubar: false,
     statusbar: false,
     height: 250,

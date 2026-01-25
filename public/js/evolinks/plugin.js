@@ -6,38 +6,32 @@
     tinymce.addI18n('en', {
         'Search in EVO': 'Search in EVO',
         'Browse': 'Browse',
-        'Results': 'Results',
-        'Insert EVO link': 'Insert EVO link'
+        'Results': 'Results'
     });
     tinymce.addI18n('de', {
         'Search in EVO': 'In EVO suchen',
         'Browse': 'Durchsuchen',
-        'Results': 'Ergebnisse',
-        'Insert EVO link': 'EVO-Link einfuegen'
+        'Results': 'Ergebnisse'
     });
     tinymce.addI18n('uk', {
-        'Search in EVO': '\\u041f\\u043e\\u0448\\u0443\\u043a \\u0432 EVO',
-        'Browse': '\\u041e\\u0433\\u043b\\u044f\\u0434',
-        'Results': '\\u0420\\u0435\\u0437\\u0443\\u043b\\u044c\\u0442\\u0430\\u0442\\u0438',
-        'Insert EVO link': '\\u0412\\u0441\\u0442\\u0430\\u0432\\u0438\\u0442\\u0438 EVO \\u043f\\u043e\\u0441\\u0438\\u043b\\u0430\\u043d\\u043d\\u044f'
+        'Search in EVO': '\u041f\u043e\u0448\u0443\u043a \u0432 EVO',
+        'Browse': '\u041e\u0433\u043b\u044f\u0434',
+        'Results': '\u0420\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442\u0438'
     });
     tinymce.addI18n('pl', {
         'Search in EVO': 'Szukaj w EVO',
-        'Browse': 'Przegl\\u0105daj',
-        'Results': 'Wyniki',
-        'Insert EVO link': 'Wstaw link EVO'
+        'Browse': 'Przegl\u0105daj',
+        'Results': 'Wyniki'
     });
     tinymce.addI18n('ja', {
-        'Search in EVO': 'EVO\\u3067\\u691c\\u7d22',
-        'Browse': '\\u53c2\\u7167',
-        'Results': '\\u7d50\\u679c',
-        'Insert EVO link': 'EVO\\u30ea\\u30f3\\u30af\\u3092\\u633f\\u5165'
+        'Search in EVO': 'EVO\u3067\u691c\u7d22',
+        'Browse': '\u53c2\u7167',
+        'Results': '\u7d50\u679c'
     });
     tinymce.addI18n('jp', {
-        'Search in EVO': 'EVO\\u3067\\u691c\\u7d22',
-        'Browse': '\\u53c2\\u7167',
-        'Results': '\\u7d50\\u679c',
-        'Insert EVO link': 'EVO\\u30ea\\u30f3\\u30af\\u3092\\u633f\\u5165'
+        'Search in EVO': 'EVO\u3067\u691c\u7d22',
+        'Browse': '\u53c2\u7167',
+        'Results': '\u7d50\u679c'
     });
 
     function assign(target) {
@@ -661,20 +655,6 @@
             }
 
             resolveLinkList().then(openWithLists);
-        }
-
-        if (editor.ui && editor.ui.registry) {
-            editor.ui.registry.addButton('evolinks', {
-                icon: 'link',
-                tooltip: t('Insert EVO link'),
-                onAction: openDialog
-            });
-            editor.ui.registry.addMenuItem('evolinks', {
-                icon: 'link',
-                text: t('Insert EVO link'),
-                onAction: openDialog,
-                context: 'insert'
-            });
         }
 
         function registerCommand() {

@@ -1,7 +1,7 @@
 window.eTinyMCEProfiles = window.eTinyMCEProfiles || {};
 window.eTinyMCEProfiles.full = {
     plugins: 'advlist autolink lists link evolinks image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount codesample emoticons',
-    toolbar: 'undo redo | blocks | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link evolinks image media table | code preview fullscreen',
+    toolbar: 'undo redo | blocks | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media table | code preview fullscreen',
     menubar: true,
     statusbar: true,
     height: 500,
