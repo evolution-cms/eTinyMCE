@@ -256,6 +256,7 @@
 
     var profiles = window.eTinyMCEProfiles || {};
     var defaultKey = cfg.defaultProfile || '';
+    var tinymceBaseUrl = normalizedBaseUrl + '/assets/plugins/eTinyMCE/tinymce';
 
     function normalizePluginList(value) {
         if (Array.isArray(value)) {
@@ -289,6 +290,13 @@
         options.external_plugins = external;
     }
 
+    function normalizePluginsFromProfile(profileOptions) {
+        if (!profileOptions || typeof profileOptions !== 'object') {
+            return [];
+        }
+        return normalizePluginList(profileOptions.plugins);
+    }
+
     queue.forEach(function (item) {
         var profileKey = item.profile;
         if (!profiles[profileKey]) {
@@ -302,6 +310,7 @@
         }
 
         var profileOptions = Object.assign({}, profiles[profileKey] || {});
+        var profilePlugins = normalizePluginsFromProfile(profileOptions);
         var evolinksDefaults = {
             searchUrl: normalizedBaseUrl + '/assets/plugins/eTinyMCE/connectors/evolinks-search.php',
             minChars: 2,
@@ -325,10 +334,15 @@
             selector: item.selectors,
             file_picker_callback: window.eTinyMCEFilePicker,
             setup: window.eTinyMCESetup,
-            license_key: 'gpl'
+            license_key: 'gpl',
+            base_url: tinymceBaseUrl,
+            suffix: '.min'
         };
 
         var initOptions = Object.assign({}, profileOptions, item.options || {}, baseOptions);
+        if (profilePlugins.length) {
+            initOptions.plugins = profilePlugins.join(' ');
+        }
         var evolinksUrl = normalizedBaseUrl + '/assets/plugins/eTinyMCE/js/evolinks/plugin.js';
         ensureExternalPlugin(initOptions, 'evolinks', evolinksUrl);
         ensurePlugin(initOptions, 'evolinks');
