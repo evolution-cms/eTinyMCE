@@ -1,6 +1,6 @@
 window.eTinyMCEProfiles = window.eTinyMCEProfiles || {};
 window.eTinyMCEProfiles.custom = {
-    plugins: 'autolink lists link',
+    plugins: 'autolink lists link evolinks',
     toolbar: 'undo redo | bold italic | bullist numlist | link',
     menubar: false,
     statusbar: false,
