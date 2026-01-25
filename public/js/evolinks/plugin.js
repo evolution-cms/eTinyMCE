@@ -657,6 +657,11 @@
             resolveLinkList().then(openWithLists);
         }
 
-        editor.addCommand('mceLink', openDialog);
+        function registerCommand() {
+            editor.addCommand('mceLink', openDialog);
+        }
+
+        registerCommand();
+        editor.on('init', registerCommand);
     });
 })();
