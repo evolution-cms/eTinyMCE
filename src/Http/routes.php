@@ -59,14 +59,7 @@ Route::middleware(config('app.middleware.global', []))->get('evo-link-search', f
         return strcmp($aTitle, $bTitle);
     });
 
-    $iconHtml = '';
-    if (function_exists('svg')) {
-        try {
-            $iconHtml = svg('tabler-file')->toHtml();
-        } catch (\Throwable $e) {
-            $iconHtml = '';
-        }
-    }
+    $iconHtml = 'link';
 
     $output = [];
     foreach ($rows as $row) {

@@ -1409,7 +1409,7 @@
             timer: null,
             updating: false,
             iconRegistered: false,
-            iconName: 'evo-file'
+            iconName: 'link'
         };
         const showEvoNotice = (text) => {
             if (editor.notificationManager && typeof editor.notificationManager.open === 'function') {
@@ -1559,11 +1559,22 @@
                     results.forEach((item) => {
                         const text = item.title || item.pagetitle || item.alias || String(item.id);
                         const value = String(item.id);
-                        if (!evoState.iconRegistered && item.icon && tinymce?.IconManager?.add) {
-                            tinymce.IconManager.add(evoState.iconName, item.icon);
-                            evoState.iconRegistered = true;
+                        let iconName = 'link';
+                        if (item && typeof item.icon === 'string' && item.icon.trim()) {
+                            const rawIcon = item.icon.trim();
+                            if (rawIcon.indexOf('<svg') !== -1 && tinymce?.IconManager?.add) {
+                                if (!evoState.iconRegistered && evoState.iconName !== 'link') {
+                                    tinymce.IconManager.add(evoState.iconName, rawIcon);
+                                    evoState.iconRegistered = true;
+                                }
+                                if (evoState.iconRegistered) {
+                                    iconName = evoState.iconName;
+                                }
+                            } else {
+                                iconName = rawIcon;
+                            }
                         }
-                        items.push({ text, value, icon: evoState.iconRegistered ? evoState.iconName : 'none' });
+                        items.push({ text, value, icon: iconName });
                         map[value] = item;
                     });
                     evoState.searchItems = items;
