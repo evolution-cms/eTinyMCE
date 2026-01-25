@@ -454,6 +454,10 @@ Event::listen('evolution.OnRichTextEditorInit', function ($params) {
         $urlStrategy = 'relative';
     }
 
+    $linkEvoPath = MODX_BASE_PATH . 'assets/plugins/eTinyMCE/js/link-evo.js';
+    $linkEvoMtime = @filemtime($linkEvoPath);
+    $cacheBust = is_int($linkEvoMtime) ? (string)$linkEvoMtime : '';
+
     $fileManagerConfig = [
         'enabled' => $fileManagerEnabled,
         'urlPrefix' => $lfmUrlPrefix,
@@ -470,6 +474,7 @@ Event::listen('evolution.OnRichTextEditorInit', function ($params) {
         'baseUrl' => $siteBaseUrl,
         'whichBrowser' => $whichBrowser,
         'fileManager' => $fileManagerConfig,
+        'cacheBust' => $cacheBust,
     ], JSON_UNESCAPED_SLASHES);
 
     if ($configJson === false) {
@@ -478,7 +483,10 @@ Event::listen('evolution.OnRichTextEditorInit', function ($params) {
     }
 
     $output[] = '<script>window.eTinyMCEConfig=' . $configJson . ';</script>';
-    $output[] = '<script src="' . $baseUrl . '/js/etinymce-init.js"></script>';
+    $initScriptPath = MODX_BASE_PATH . 'assets/plugins/eTinyMCE/js/etinymce-init.js';
+    $initMtime = @filemtime($initScriptPath);
+    $initVersion = is_int($initMtime) ? ('?v=' . $initMtime) : '';
+    $output[] = '<script src="' . $baseUrl . '/js/etinymce-init.js' . $initVersion . '"></script>';
 
     return implode("\n", $output);
 });

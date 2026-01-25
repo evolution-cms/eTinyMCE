@@ -8,6 +8,7 @@ class eTinyMCEServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(dirname(__DIR__) . '/config/eTinyMCECheck.php', 'cms.settings');
         $this->loadViewsFrom(dirname(__DIR__) . '/views', 'eTinyMCE');
+        $this->registerRoutes();
         if ($this->app->runningInConsole()) {
             $this->publishResources();
         }
@@ -86,5 +87,17 @@ class eTinyMCEServiceProvider extends ServiceProvider
         }
 
         return $files;
+    }
+
+    protected function registerRoutes(): void
+    {
+        if (defined('IN_MANAGER_MODE') && IN_MANAGER_MODE === true) {
+            return;
+        }
+
+        $routesPath = __DIR__ . '/Http/routes.php';
+        if (is_file($routesPath)) {
+            include $routesPath;
+        }
     }
 }
