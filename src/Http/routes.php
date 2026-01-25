@@ -87,7 +87,7 @@ Route::middleware(config('app.middleware.global', []))->get('evo-link-search', f
         $uri = ltrim($uri, '/');
 
         if ($url === '' && $uri !== '') {
-            $siteUrl = defined('MODX_SITE_URL') ? MODX_SITE_URL : '/';
+            $siteUrl = defined('EVO_SITE_URL') ? EVO_SITE_URL : '/';
             $siteUrl = rtrim($siteUrl, '/');
             $url = $siteUrl . '/' . $uri;
         }
