@@ -153,7 +153,26 @@
         var type = isImage ? 'images' : 'files';
         var title = isImage ? 'Image' : 'File';
 
-        var managerUrl = (window.modx && window.modx.MODX_MANAGER_URL) || window.MODX_MANAGER_URL || '';
+        var managerUrl = '';
+        var managerWindow = window;
+        while (managerWindow) {
+            try {
+                managerUrl = (managerWindow.evo && (managerWindow.evo.EVO_MANAGER_URL || managerWindow.evo.MODX_MANAGER_URL)) ||
+                    (managerWindow.modx && (managerWindow.modx.EVO_MANAGER_URL || managerWindow.modx.MODX_MANAGER_URL)) ||
+                    managerWindow.EVO_MANAGER_URL || managerWindow.MODX_MANAGER_URL || '';
+                if (managerUrl || managerWindow.parent === managerWindow) {
+                    break;
+                }
+                managerWindow = managerWindow.parent;
+            } catch (error) {
+                break;
+            }
+        }
+        if (!managerUrl) {
+            showMessage(editor, 'Unable to determine the manager URL. Please reload the manager.');
+            return;
+        }
+        managerUrl = managerUrl.replace(/\/+$/, '') + '/';
         var url = managerUrl + 'media/browser/mcpuk/browse.php?opener=' + opener + '&field=src&type=' + type;
 
         // Legacy mcpuk uses a global URL handoff; keep it local to this dialog.
