@@ -75,6 +75,18 @@ if (!function_exists('eTinyMCE_themeCssUrls')) {
     }
 }
 
+if (!function_exists('eTinyMCE_isBundledContentCss')) {
+    function eTinyMCE_isBundledContentCss(string $value): bool
+    {
+        if ($value === '' || preg_match('/[\/\\\\.]/', $value)) {
+            return false;
+        }
+
+        return is_file(MODX_BASE_PATH . 'assets/plugins/eTinyMCE/tinymce/skins/content/' . $value . '/content.min.css')
+            || is_file(MODX_BASE_PATH . 'assets/plugins/eTinyMCE/tinymce/skins/content/' . $value . '/content.css');
+    }
+}
+
 Event::listen('evolution.OnRichTextEditorRegister', function () {
     return 'eTinyMCE';
 });
@@ -287,6 +299,11 @@ Event::listen('evolution.OnRichTextEditorInit', function ($params) {
         $resolvedThemeCss = [];
 
         foreach ($themeCss as $cssPath) {
+            if (eTinyMCE_isBundledContentCss($cssPath)) {
+                $resolvedThemeCss[] = $cssPath;
+                continue;
+            }
+
             if (preg_match('/^https?:\/\//', $cssPath) || strpos($cssPath, '//') === 0) {
                 $resolvedThemeCss[] = $cssPath;
                 continue;
